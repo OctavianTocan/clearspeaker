@@ -10,6 +10,7 @@ import { execFile, spawn } from "node:child_process";
 import { once } from "node:events";
 import type { Writable } from "node:stream";
 import { promisify } from "node:util";
+import { trimOptionalText, trimText } from "./string-values";
 import { splitText } from "./text-chunking";
 import {
   extractWavAudio,
@@ -55,7 +56,7 @@ export default async function main() {
   let toast: Toast | undefined;
 
   try {
-    const text = (await getSelectedText()).trim();
+    const text = trimText(await getSelectedText());
 
     if (!text) {
       await showHUD("No text selected");
@@ -159,11 +160,11 @@ async function getPendingChunkAudio(
 }
 
 async function getSpeechPreferences() {
-  const preferences = getPreferenceValues<Preferences>();
+  const preferences = getPreferenceValues<Preferences>() ?? {};
   const apiKey =
-    process.env.XAI_API_KEY?.trim() ||
+    trimOptionalText(process.env.XAI_API_KEY) ||
     (await getInfisicalSecret(preferences)) ||
-    preferences.xaiApiKey?.trim();
+    trimOptionalText(preferences.xaiApiKey);
 
   if (!apiKey) {
     throw new Error(
@@ -173,7 +174,7 @@ async function getSpeechPreferences() {
 
   return {
     apiKey,
-    voiceId: preferences.voiceId?.trim() || DEFAULT_VOICE_ID,
+    voiceId: trimOptionalText(preferences.voiceId) || DEFAULT_VOICE_ID,
   };
 }
 
@@ -187,17 +188,19 @@ async function getInfisicalSecret(preferences: Preferences) {
   const args = [
     "secrets",
     "get",
-    preferences.infisicalSecretName?.trim() || DEFAULT_INFISICAL_SECRET_NAME,
+    trimOptionalText(preferences.infisicalSecretName) ||
+      DEFAULT_INFISICAL_SECRET_NAME,
     "--plain",
     "--silent",
     "--env",
-    preferences.infisicalEnvironment?.trim() || DEFAULT_INFISICAL_ENVIRONMENT,
+    trimOptionalText(preferences.infisicalEnvironment) ||
+      DEFAULT_INFISICAL_ENVIRONMENT,
     "--path",
-    preferences.infisicalPath?.trim() || DEFAULT_INFISICAL_PATH,
+    trimOptionalText(preferences.infisicalPath) || DEFAULT_INFISICAL_PATH,
   ];
-  const projectId = preferences.infisicalProjectId?.trim();
-  const domain = preferences.infisicalDomain?.trim();
-  const token = preferences.infisicalToken?.trim();
+  const projectId = trimOptionalText(preferences.infisicalProjectId);
+  const domain = trimOptionalText(preferences.infisicalDomain);
+  const token = trimOptionalText(preferences.infisicalToken);
 
   if (projectId) {
     args.push("--projectId", projectId);
@@ -217,7 +220,7 @@ async function getInfisicalSecret(preferences: Preferences) {
       env: process.env,
     });
 
-    return stdout.trim() || undefined;
+    return trimOptionalText(stdout);
   } catch {
     return undefined;
   }
