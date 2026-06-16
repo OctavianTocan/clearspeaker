@@ -1,0 +1,27 @@
+test/local-config.test.ts
+  s_05c976c2d919e4::t_b9a2a8bbfd4ae7 1-44
+src/speak-text.ts
+  s_05c976c2d919e4::t_42703d9845ada6 211-212
+  s_05c976c2d919e4::t_8065caa2d06015 13,184,194,200,203-205,207-210
+README.md
+  s_05c976c2d919e4::t_3844999e9692e4 56,65-80
+src/local-config.ts
+  s_05c976c2d919e4::t_0195d496ee9e11 31,49-51,53-57,59-62,64-69
+  s_05c976c2d919e4::t_e32f6d4b442b78 1-30,32-48,52,58,63,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "cba1b38c2ced0f5e6403c8238cd35fecc3cfbe37",
+  "prompts": {},
+  "sessions": {
+    "s_05c976c2d919e4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed057-3469-7dd0-8f84-33c00f998af3",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Octavian Tocan <contact@octaviantocan.com>"
+    }
+  }
+}
