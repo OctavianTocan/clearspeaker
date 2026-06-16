@@ -1,0 +1,26 @@
+src/speak-text.ts
+  s_05c976c2d919e4::t_eb2d2730b7910d 381-385,401-411
+  s_05c976c2d919e4::t_35e853d52e4b30 26-28,34-38,41,44-50,100,161-166,169-171,176,180-223
+.gitignore
+  s_05c976c2d919e4::t_f626114747ae23 10
+README.md
+  s_05c976c2d919e4::t_fe83b305d48f12 24-31,56-62,71
+package.json
+  s_05c976c2d919e4::t_1b160c09b9e265 40-83,86-87,89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "e929b850fa2c913f0af2bceaf2bd9505ce6c0194",
+  "prompts": {},
+  "sessions": {
+    "s_05c976c2d919e4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed057-3469-7dd0-8f84-33c00f998af3",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Octavian Tocan <contact@octaviantocan.com>"
+    }
+  }
+}
