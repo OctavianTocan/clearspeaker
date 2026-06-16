@@ -28,6 +28,23 @@ test("extractWavAudio skips non-audio chunks before the data chunk", () => {
   assert.deepEqual(audio.data, samples);
 });
 
+test("extractWavAudio accepts an oversized final data chunk", () => {
+  const samples = Buffer.from([9, 10, 11, 12]);
+  const audio = extractWavAudio(createWav(samples, [], samples.length + 1000));
+
+  assert.deepEqual(audio.data, samples);
+});
+
+test("extractWavAudio rejects truncated metadata chunks", () => {
+  const invalidMetadata = Buffer.concat([Buffer.from("LIST"), uint32(1000)]);
+
+  assert.throws(
+    () =>
+      extractWavAudio(createWav(Buffer.from([1, 2, 3, 4]), [invalidMetadata])),
+    /truncated WAV file/,
+  );
+});
+
 test("getPcmPlaybackOptions maps xAI WAV output to raw PCM playback options", () => {
   const audio = extractWavAudio(createWav(Buffer.from([1, 2, 3, 4])));
 
@@ -38,7 +55,11 @@ test("getPcmPlaybackOptions maps xAI WAV output to raw PCM playback options", ()
   assert.equal(isSameWavFormat(audio.format, audio.format), true);
 });
 
-function createWav(samples: Buffer, extraChunks: Buffer[] = []) {
+function createWav(
+  samples: Buffer,
+  extraChunks: Buffer[] = [],
+  dataChunkSize = samples.length,
+) {
   const formatChunk = Buffer.alloc(16);
   const channelCount = 1;
   const sampleRate = 24000;
@@ -60,7 +81,7 @@ function createWav(samples: Buffer, extraChunks: Buffer[] = []) {
     formatChunk,
     ...extraChunks,
     Buffer.from("data"),
-    uint32(samples.length),
+    uint32(dataChunkSize),
     samples,
   ];
   const body = Buffer.concat(chunks);

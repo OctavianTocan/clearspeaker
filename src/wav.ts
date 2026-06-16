@@ -35,10 +35,11 @@ export function extractWavAudio(audio: Buffer): WavAudio {
     const chunkId = audio.toString("ascii", offset, offset + 4);
     const chunkSize = audio.readUInt32LE(offset + 4);
     const chunkStart = offset + 8;
-    const isOpenEndedDataChunk = chunkId === "data" && chunkSize === 0xffffffff;
-    const chunkEnd = isOpenEndedDataChunk
-      ? audio.length
-      : chunkStart + chunkSize;
+    const declaredChunkEnd = chunkStart + chunkSize;
+    const isOpenEndedDataChunk =
+      chunkId === "data" &&
+      (chunkSize === 0xffffffff || declaredChunkEnd > audio.length);
+    const chunkEnd = isOpenEndedDataChunk ? audio.length : declaredChunkEnd;
 
     if (chunkEnd > audio.length) {
       throw new Error("xAI returned a truncated WAV file");
