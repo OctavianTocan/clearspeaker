@@ -1,0 +1,23 @@
+test/wav.test.ts
+  s_05c976c2d919e4::t_66b849137576e7 42-43
+  s_05c976c2d919e4::t_342da1ae6dc3fd 31-41,44-47,58-62,84
+src/wav.ts
+  s_05c976c2d919e4::t_66b849137576e7 42
+  s_05c976c2d919e4::t_3b9b1ba3c2e94e 38-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "cbb445e193c70cb0dd81b62b93dcb340e3cf9ea9",
+  "prompts": {},
+  "sessions": {
+    "s_05c976c2d919e4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed057-3469-7dd0-8f84-33c00f998af3",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Octavian Tocan <contact@octaviantocan.com>"
+    }
+  }
+}
