@@ -1,0 +1,24 @@
+src/string-values.ts
+  s_05c976c2d919e4::t_b99b493da97b56 1-9
+src/speak-text.ts
+  s_05c976c2d919e4::t_5abe9bece3a770 13,59,165,167,177,191-192,196-197,199,201-203,223
+  s_05c976c2d919e4::t_e7c7650a134683 163
+test/string-values.test.ts
+  s_05c976c2d919e4::t_854365791c8bc7 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "46955b00294dd2ab63a92492140b25fad0b84db4",
+  "prompts": {},
+  "sessions": {
+    "s_05c976c2d919e4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ed057-3469-7dd0-8f84-33c00f998af3",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Octavian Tocan <contact@octaviantocan.com>"
+    }
+  }
+}
