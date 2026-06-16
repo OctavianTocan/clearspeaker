@@ -53,7 +53,7 @@ npm run dev
 
 3. In Raycast, configure the command preferences:
 
-- `Infisical Project ID`: optional when your local Infisical project is already initialized; otherwise set this so the CLI can fetch `XAI_API_KEY`
+- `Infisical Project ID`: optional when local config exists; otherwise set this so the CLI can fetch `XAI_API_KEY`
 - `Infisical Environment`: defaults to `dev`
 - `Infisical Secret Path`: defaults to `/`
 - `Infisical Secret Name`: defaults to `XAI_API_KEY`
@@ -61,6 +61,23 @@ npm run dev
 - `Infisical Service Token`: optional, only needed if the CLI cannot use your local login
 - `Fallback xAI API Key`: optional; used only if Infisical lookup fails
 - `Voice ID`: optional; defaults to `ara`
+
+For installed Raycast commands, the extension may not run from the repository directory. To keep Infisical working outside development mode, add a local-only config file at:
+
+```text
+~/Library/Application Support/ClearSpeaker/infisical.json
+```
+
+The file can use Infisical's project format:
+
+```json
+{
+  "workspaceId": "your-infisical-project-id",
+  "defaultEnvironment": "dev"
+}
+```
+
+The same values can also be set in Raycast command preferences. Raycast preferences take precedence over local config.
 
 ## Usage
 

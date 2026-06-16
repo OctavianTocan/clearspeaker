@@ -10,6 +10,7 @@ import { execFile, spawn } from "node:child_process";
 import { once } from "node:events";
 import type { Writable } from "node:stream";
 import { promisify } from "node:util";
+import { getLocalInfisicalConfig } from "./local-config";
 import { trimOptionalText, trimText } from "./string-values";
 import { splitText } from "./text-chunking";
 import {
@@ -180,6 +181,7 @@ async function getSpeechPreferences() {
 
 async function getInfisicalSecret(preferences: Preferences) {
   const infisicalPath = await findInfisicalPath();
+  const localConfig = getLocalInfisicalConfig();
 
   if (!infisicalPath) {
     return undefined;
@@ -189,18 +191,25 @@ async function getInfisicalSecret(preferences: Preferences) {
     "secrets",
     "get",
     trimOptionalText(preferences.infisicalSecretName) ||
+      localConfig.secretName ||
       DEFAULT_INFISICAL_SECRET_NAME,
     "--plain",
     "--silent",
     "--env",
     trimOptionalText(preferences.infisicalEnvironment) ||
+      localConfig.environment ||
       DEFAULT_INFISICAL_ENVIRONMENT,
     "--path",
-    trimOptionalText(preferences.infisicalPath) || DEFAULT_INFISICAL_PATH,
+    trimOptionalText(preferences.infisicalPath) ||
+      localConfig.path ||
+      DEFAULT_INFISICAL_PATH,
   ];
-  const projectId = trimOptionalText(preferences.infisicalProjectId);
-  const domain = trimOptionalText(preferences.infisicalDomain);
-  const token = trimOptionalText(preferences.infisicalToken);
+  const projectId =
+    trimOptionalText(preferences.infisicalProjectId) || localConfig.projectId;
+  const domain =
+    trimOptionalText(preferences.infisicalDomain) || localConfig.domain;
+  const token =
+    trimOptionalText(preferences.infisicalToken) || localConfig.token;
 
   if (projectId) {
     args.push("--projectId", projectId);
