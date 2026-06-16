@@ -1,0 +1,65 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "clearspeaker",
+  "description": "Clean selected text and read it aloud with smooth xAI speech.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OctavianTocan/clearspeaker.git"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "test": "node --experimental-strip-types --test test/**/*.test.ts",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "build": "ray build",
+    "publish": "npx @raycast/api@latest publish",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1"
+  },
+  "dependencies": {
+    "@raycast/api": "^1.103.0",
+    "@raycast/utils": "^2.2.1"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "22.19.17",
+    "@types/react": "19.0.10",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  },
+  "icon": "extension-icon.png",
+  "commands": [
+    {
+      "mode": "no-view",
+      "name": "speak-text",
+      "title": "Read Selection Aloud",
+      "description": "Cleans selected text, skips code and links, then reads it aloud with smooth xAI speech.",
+      "preferences": [
+        {
+          "name": "xaiApiKey",
+          "title": "xAI API Key",
+          "description": "Stored locally by Raycast and used to call xAI's text-to-speech API.",
+          "type": "password",
+          "required": true
+        },
+        {
+          "name": "voiceId",
+          "title": "Voice ID",
+          "description": "xAI voice to use for speech.",
+          "type": "textfield",
+          "default": "ara",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "title": "ClearSpeaker",
+  "author": "octavian_tocan",
+  "platforms": [
+    "macOS"
+  ],
+  "categories": [
+    "Productivity"
+  ]
+}
