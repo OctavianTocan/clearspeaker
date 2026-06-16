@@ -37,11 +37,56 @@
       "description": "Cleans selected text, skips code and links, then reads it aloud with smooth xAI speech.",
       "preferences": [
         {
-          "name": "xaiApiKey",
-          "title": "xAI API Key",
-          "description": "Stored locally by Raycast and used to call xAI's text-to-speech API.",
+          "name": "infisicalProjectId",
+          "title": "Infisical Project ID",
+          "description": "Optional. Used by the Infisical CLI to fetch XAI_API_KEY.",
+          "type": "textfield",
+          "required": false
+        },
+        {
+          "name": "infisicalEnvironment",
+          "title": "Infisical Environment",
+          "description": "Environment to read from when using Infisical.",
+          "type": "textfield",
+          "default": "dev",
+          "required": false
+        },
+        {
+          "name": "infisicalPath",
+          "title": "Infisical Secret Path",
+          "description": "Folder path that contains the xAI key in Infisical.",
+          "type": "textfield",
+          "default": "/",
+          "required": false
+        },
+        {
+          "name": "infisicalSecretName",
+          "title": "Infisical Secret Name",
+          "description": "Secret name for the xAI API key.",
+          "type": "textfield",
+          "default": "XAI_API_KEY",
+          "required": false
+        },
+        {
+          "name": "infisicalDomain",
+          "title": "Infisical Domain",
+          "description": "Optional. Use this for EU Cloud or a self-hosted Infisical instance.",
+          "type": "textfield",
+          "required": false
+        },
+        {
+          "name": "infisicalToken",
+          "title": "Infisical Service Token",
+          "description": "Optional. Only needed if the CLI cannot use your local Infisical login.",
           "type": "password",
-          "required": true
+          "required": false
+        },
+        {
+          "name": "xaiApiKey",
+          "title": "Fallback xAI API Key",
+          "description": "Optional. Used only if Infisical does not return XAI_API_KEY.",
+          "type": "password",
+          "required": false
         },
         {
           "name": "voiceId",

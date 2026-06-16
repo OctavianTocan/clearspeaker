@@ -23,16 +23,31 @@ import {
 const run = promisify(execFile);
 const PREFETCH_COUNT = 3;
 const DEFAULT_VOICE_ID = "ara";
+const DEFAULT_INFISICAL_SECRET_NAME = "XAI_API_KEY";
+const DEFAULT_INFISICAL_ENVIRONMENT = "dev";
+const DEFAULT_INFISICAL_PATH = "/";
 const FFPLAY_PATHS = [
   "/opt/homebrew/bin/ffplay",
   "/usr/local/bin/ffplay",
   "ffplay",
 ];
+const INFISICAL_PATHS = [
+  "/opt/homebrew/bin/infisical",
+  "/usr/local/bin/infisical",
+  "infisical",
+];
 
 let ffplayPathPromise: Promise<string> | undefined;
+let infisicalPathPromise: Promise<string | undefined> | undefined;
 
 interface Preferences {
-  readonly xaiApiKey: string;
+  readonly infisicalProjectId?: string;
+  readonly infisicalEnvironment?: string;
+  readonly infisicalPath?: string;
+  readonly infisicalSecretName?: string;
+  readonly infisicalDomain?: string;
+  readonly infisicalToken?: string;
+  readonly xaiApiKey?: string;
   readonly voiceId?: string;
 }
 
@@ -82,7 +97,7 @@ async function speakText(text: string, toast: Toast) {
     return;
   }
 
-  const { apiKey, voiceId } = getSpeechPreferences();
+  const { apiKey, voiceId } = await getSpeechPreferences();
   let nextChunkToGenerate = 0;
   const pendingChunks = new Map<number, Promise<Buffer>>();
   let player: PcmPlayer | undefined;
@@ -143,18 +158,69 @@ async function getPendingChunkAudio(
   return chunk;
 }
 
-function getSpeechPreferences() {
-  const { xaiApiKey, voiceId } = getPreferenceValues<Preferences>();
-  const apiKey = xaiApiKey.trim();
+async function getSpeechPreferences() {
+  const preferences = getPreferenceValues<Preferences>();
+  const apiKey =
+    process.env.XAI_API_KEY?.trim() ||
+    (await getInfisicalSecret(preferences)) ||
+    preferences.xaiApiKey?.trim();
 
   if (!apiKey) {
-    throw new Error("Add your xAI API key in the command preferences");
+    throw new Error(
+      "Could not load XAI_API_KEY from Infisical. Set Infisical preferences or add a fallback xAI API key.",
+    );
   }
 
   return {
     apiKey,
-    voiceId: voiceId?.trim() || DEFAULT_VOICE_ID,
+    voiceId: preferences.voiceId?.trim() || DEFAULT_VOICE_ID,
   };
+}
+
+async function getInfisicalSecret(preferences: Preferences) {
+  const infisicalPath = await findInfisicalPath();
+
+  if (!infisicalPath) {
+    return undefined;
+  }
+
+  const args = [
+    "secrets",
+    "get",
+    preferences.infisicalSecretName?.trim() || DEFAULT_INFISICAL_SECRET_NAME,
+    "--plain",
+    "--silent",
+    "--env",
+    preferences.infisicalEnvironment?.trim() || DEFAULT_INFISICAL_ENVIRONMENT,
+    "--path",
+    preferences.infisicalPath?.trim() || DEFAULT_INFISICAL_PATH,
+  ];
+  const projectId = preferences.infisicalProjectId?.trim();
+  const domain = preferences.infisicalDomain?.trim();
+  const token = preferences.infisicalToken?.trim();
+
+  if (projectId) {
+    args.push("--projectId", projectId);
+  }
+
+  if (domain) {
+    args.push("--domain", domain);
+  }
+
+  if (token) {
+    args.push("--token", token);
+  }
+
+  try {
+    const { stdout } = await run(infisicalPath, args, {
+      timeout: 10000,
+      env: process.env,
+    });
+
+    return stdout.trim() || undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 async function createSpeech(text: string, apiKey: string, voiceId: string) {
@@ -312,6 +378,11 @@ function findFfplayPath() {
   return ffplayPathPromise;
 }
 
+function findInfisicalPath() {
+  infisicalPathPromise ??= resolveInfisicalPath();
+  return infisicalPathPromise;
+}
+
 async function resolveFfplayPath() {
   for (const path of FFPLAY_PATHS) {
     try {
@@ -325,6 +396,19 @@ async function resolveFfplayPath() {
   throw new Error(
     "Install FFmpeg to enable seamless playback: brew install ffmpeg",
   );
+}
+
+async function resolveInfisicalPath() {
+  for (const path of INFISICAL_PATHS) {
+    try {
+      await run(path, ["--version"]);
+      return path;
+    } catch {
+      // Try the next common Homebrew/PATH location.
+    }
+  }
+
+  return undefined;
 }
 
 async function writeToStream(stream: Writable, buffer: Buffer) {

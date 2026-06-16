@@ -21,7 +21,14 @@ It is built for reading developer-heavy text without the noise: it strips links,
 
 - macOS
 - Raycast
-- An xAI API key
+- An xAI API key stored as `XAI_API_KEY` in Infisical, or a fallback key stored in Raycast preferences
+- Infisical CLI if you want automatic secret lookup:
+
+```sh
+brew install infisical/get-cli/infisical
+infisical login
+```
+
 - FFmpeg for seamless playback:
 
 ```sh
@@ -46,7 +53,13 @@ npm run dev
 
 3. In Raycast, configure the command preferences:
 
-- `xAI API Key`: your xAI API key
+- `Infisical Project ID`: optional when your local Infisical project is already initialized; otherwise set this so the CLI can fetch `XAI_API_KEY`
+- `Infisical Environment`: defaults to `dev`
+- `Infisical Secret Path`: defaults to `/`
+- `Infisical Secret Name`: defaults to `XAI_API_KEY`
+- `Infisical Domain`: optional, for EU Cloud or self-hosted Infisical
+- `Infisical Service Token`: optional, only needed if the CLI cannot use your local login
+- `Fallback xAI API Key`: optional; used only if Infisical lookup fails
 - `Voice ID`: optional; defaults to `ara`
 
 ## Usage
@@ -55,7 +68,7 @@ Select text in any app, run `Read Selection Aloud` from Raycast, and the command
 
 ## Privacy
 
-Selected text is sent directly to xAI's TTS API so audio can be generated. API keys are stored in Raycast command preferences and are not committed to this repository.
+Selected text is sent directly to xAI's TTS API so audio can be generated. Secrets are read from your local Infisical setup when available; optional fallback keys are stored in Raycast command preferences and are not committed to this repository.
 
 ## Development
 
